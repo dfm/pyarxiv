@@ -3,3 +3,7 @@
 *.pyc
 *.dat
 *.swp
+PyBTParse/btparse/src/*
+build/
+*.so
+*.o
