@@ -10,6 +10,8 @@ import bibparser
 import sys
 import re
 
+import Stemmer
+
 import numpy as np
 np.random.seed()
 
@@ -17,8 +19,9 @@ ignore_list = ['and','a','the','then','we','by','be','et','al','not']
 strip_chars = '.,(){}`\''
 
 def main():
+  stem = Stemmer.Stemmer("english")
   bib = bibparser.BibTex(sys.argv[1])
-  aid = np.random.randint(len(bib.bib))
+  aid = 1#np.random.randint(len(bib.bib))
   while ('Abstract' in bib.bib[aid].keys()) == False:
     aid = np.random.randint(len(bib.bib))
   
@@ -27,6 +30,7 @@ def main():
   q_vec = []
   q_val  = []
   for w in q_vec0:
+    #w = stem.stemWord(w.strip(strip_chars).lower())
     w = w.strip(strip_chars).lower()
     if (w in ignore_list) == False \
         and re.search('\\\\',w) == None:
@@ -44,6 +48,7 @@ def main():
       r_vec = sorted(bib.bib[ind]['Abstract'].split())
       r_val = np.zeros(len(q_val))
       for w in r_vec:
+        #w = stem.stemWord(w.strip(strip_chars).lower())
         w = w.strip(strip_chars).lower()
         if w in q_vec:
           r_val[q_vec.index(w)] += 1
