@@ -6,7 +6,8 @@ compareabstract.py
 Created by Dan F-M on 2011-01-16.
 """
 
-import bibparser
+# import bibparser
+import btparse
 import sys
 import re
 
@@ -21,12 +22,13 @@ strip_chars = r"""~@.,()[]{}`\/"'=1234567890% """
 
 def main():
   stem = Stemmer.Stemmer("english")
-  bib = bibparser.BibTex(sys.argv[1])
-  aid = 1#np.random.randint(len(bib.bib))
-  while ('Abstract' in bib.bib[aid].keys()) == False:
-    aid = np.random.randint(len(bib.bib))
+  # bib = bibparser.BibTex(sys.argv[1])
+  bib = btparse.load(sys.argv[1])
+  aid = 1#np.random.randint(len(bib))
+  while ('Abstract' in bib[aid].keys()) == False:
+    aid = np.random.randint(len(bib))
   
-  abstract = nltk.wordpunct_tokenize(bib.bib[aid]['Abstract'])
+  abstract = nltk.wordpunct_tokenize(bib[aid]['Abstract'])
   q_vec0 = sorted([x[0] for x in nltk.pos_tag(abstract) if x[1] in ("NN")])
   
   q_vec = []
@@ -41,11 +43,11 @@ def main():
         q_val[-1] += 1
   
   q_val = np.array(q_val)/np.sqrt(np.dot(q_val,q_val))
-  prob = np.zeros(len(bib.bib))
+  prob = np.zeros(len(bib))
   
-  for ind,entry in enumerate(bib.bib):
-    if ind != aid and ('Abstract' in bib.bib[ind].keys()):
-      abstract = nltk.wordpunct_tokenize(bib.bib[ind]['Abstract'])
+  for ind,entry in enumerate(bib):
+    if ind != aid and ('Abstract' in bib[ind].keys()):
+      abstract = nltk.wordpunct_tokenize(bib[ind]['Abstract'])
       r_vec = sorted([x[0] for x in nltk.pos_tag(abstract) if x[1] in ("NN")])
       r_val = np.zeros(len(q_val))
       for w in r_vec:
@@ -60,10 +62,10 @@ def main():
   # sort based on probability (best first)
   inds_sort = np.argsort(prob)[::-1]
   
-  print 'Similar papers to:\n\t%s\n\t\tby: %s\n'%(bib.bib[aid]['Title'],bib.bib[aid]['Author'])
+  print 'Similar papers to:\n\t%s\n\t\tby: %s\n'%(bib[aid]['Title'],bib[aid]['Author'])
   for i in range(10):
     best = inds_sort[i]
-    print '%3d.\t%s\n\t\tby: %s\n\t\tid = %3d, prob = %f\n'%(i+1,bib.bib[best]['Title'],bib.bib[best]['Author'],best,prob[best])
+    print '%3d.\t%s\n\t\tby: %s\n\t\tid = %3d, prob = %f\n'%(i+1,bib[best]['Title'],bib[best]['Author'],best,prob[best])
 
 if __name__ == '__main__':
   main()

@@ -11,6 +11,9 @@ btparse_dir = '/usr/local'
 base_dir = os.getcwd()
 os.chdir('btparse/src/')
 subprocess.Popen(['./configure','--prefix=%s'%btparse_dir]).wait()
+
+# os.environ['CFLAGS'] = '-m32'
+
 subprocess.Popen(['make']).wait()
 subprocess.Popen(['make','install']).wait()
 os.chdir(base_dir)
@@ -25,5 +28,5 @@ setup(name='btparse',
         ext_modules = [Extension(name='btparse._C_btparse', sources=['btparse/btparse.c'],
                         libraries=['btparse'],library_dirs=['%s/lib'%(btparse_dir)])],
         include_dirs = numpy.distutils.misc_util.get_numpy_include_dirs()+['%s/include'%(btparse_dir)],
-        )
+      )
 
