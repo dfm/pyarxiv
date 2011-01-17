@@ -19,7 +19,7 @@ class BibTex:
     entry = None
     
     for line in f:
-      if re.search('@article',line) != None:
+      if line[0] == '@':
         if entry != None:
           self.bib.append(entry)
         entry = {}
