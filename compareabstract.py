@@ -40,7 +40,7 @@ def main():
   prob = np.zeros(len(bib.bib))
   
   for ind,entry in enumerate(bib.bib):
-    if ind != aid and 'Abstract' in bib.bib[ind].keys():
+    if ind != aid and ('Abstract' in bib.bib[ind].keys()):
       r_vec = sorted(bib.bib[ind]['Abstract'].split())
       r_val = np.zeros(len(q_val))
       for w in r_vec:
@@ -57,7 +57,7 @@ def main():
   print 'Similar papers to:\n\t%s\n\t\tby: %s\n'%(bib.bib[aid]['Title'],bib.bib[aid]['Author'])
   for i in range(10):
     best = inds_sort[i]
-    print '%3d. (%3d)\t%s\n\t\tby: %s\n'%(i+1,best,bib.bib[best]['Title'],bib.bib[best]['Author'])
+    print '%3d.\t%s\n\t\tby: %s\n\t\tid = %3d, prob = %f\n'%(i+1,bib.bib[best]['Title'],bib.bib[best]['Author'],best,prob[best])
 
 if __name__ == '__main__':
   main()
