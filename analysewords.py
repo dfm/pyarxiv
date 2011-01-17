@@ -25,9 +25,9 @@ if __name__ == "__main__":
   wordvector = {}
   if pytools: progress = pytools.ProgressBar("Analysing",len(bib.bib))
   for item in bib.bib:
-    if item.has_key("Abstract"):
-      abstract = nltk.wordpunct_tokenize(item["Abstract"])
-      for word in [x[0] for x in nltk.pos_tag(abstract) if x[1] in ("NN")]:
+    if item.has_key("Abstract") and item.has_key("Title"):
+      text = nltk.wordpunct_tokenize(item["Abstract"] + " " + item["Title"])
+      for word in [x[0] for x in nltk.pos_tag(text) if x[1] in ("NN")]:
         word = stem.stemWord(word.strip(strip_chars).lower())
         if len(word)>1 and word not in ignore_list:
           try:
