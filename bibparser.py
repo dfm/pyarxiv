@@ -26,7 +26,7 @@ class BibTex:
       else:
         c = line.split('=')
         if len(c) >= 2 and entry != None:
-          entry[c[0].strip().strip(',{}')] = c[1].strip().strip(',{}')
+          entry[c[0].capitalize().strip().strip(',{}')] = c[1].strip().strip(',{}')
     
     self.bib.append(entry)
     # print 'Parsed %d entries in %s'%(len(self.bib),self.fn)
