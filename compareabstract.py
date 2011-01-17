@@ -11,13 +11,16 @@ import sys
 import re
 
 import numpy as np
+np.random.seed()
 
 ignore_list = ['and','a','the','then','we','by','be','et','al','not']
 strip_chars = '.,(){}`\''
 
 def main():
   bib = bibparser.BibTex(sys.argv[1])
-  aid = 373
+  aid = np.random.randint(len(bib.bib))
+  while ('Abstract' in bib.bib[aid].keys()) == False:
+    aid = np.random.randint(len(bib.bib))
   
   q_vec0 = sorted(bib.bib[aid]['Abstract'].split())
   
