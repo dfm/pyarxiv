@@ -1,6 +1,7 @@
 #!/bin/env python
 
-import bibparser
+#import bibparser
+import btparse
 from Stemmer import Stemmer
 import nltk
 import cPickle
@@ -41,8 +42,8 @@ def getGlobalWordVector(bibitems, numkeep=0):
   wordvector = {}
   if pytools: progress = pytools.ProgressBar("Analysing",len(bibitems))
   for item in bibitems:
-    if item.has_key("Abstract") and item.has_key("Title"):
-      text = nltk.wordpunct_tokenize(item["Abstract"] + " " + item["Title"])
+    if item.has_key("abstract") and item.has_key("title"):
+      text = nltk.wordpunct_tokenize(item["abstract"] + " " + item["title"])
       for word in [x[0] for x in nltk.pos_tag(text) if x[1] in ("NN")]:
         word = stem.stemWord(word.strip(strip_chars).lower())
         if len(word)>1 and word not in ignore_list:
@@ -64,7 +65,7 @@ if __name__ == "__main__":
   else:
     numkeep = 0
 
-  bib = bibparser.BibTex(sys.argv[1])
+  bib = btparse.load(sys.argv[1])
   globalWordVector = getGlobalWordVector(bib, numkeep=numkeep)
 
   cPickle.dump([x[0] for x in globalWordVector],open(sys.argv[2],"w+"))
