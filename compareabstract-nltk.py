@@ -25,10 +25,10 @@ def main():
   # bib = bibparser.BibTex(sys.argv[1])
   bib = btparse.load(sys.argv[1])
   aid = 1#np.random.randint(len(bib))
-  while ('Abstract' in bib[aid].keys()) == False:
+  while ('abstract' in bib[aid].keys()) == False:
     aid = np.random.randint(len(bib))
   
-  abstract = nltk.wordpunct_tokenize(bib[aid]['Abstract'])
+  abstract = nltk.wordpunct_tokenize(bib[aid]['abstract'])
   q_vec0 = sorted([x[0] for x in nltk.pos_tag(abstract) if x[1] in ("NN")])
   
   q_vec = []
@@ -46,8 +46,8 @@ def main():
   prob = np.zeros(len(bib))
   
   for ind,entry in enumerate(bib):
-    if ind != aid and ('Abstract' in bib[ind].keys()):
-      abstract = nltk.wordpunct_tokenize(bib[ind]['Abstract'])
+    if ind != aid and ('abstract' in bib[ind].keys()):
+      abstract = nltk.wordpunct_tokenize(bib[ind]['abstract'])
       r_vec = sorted([x[0] for x in nltk.pos_tag(abstract) if x[1] in ("NN")])
       r_val = np.zeros(len(q_val))
       for w in r_vec:
@@ -62,10 +62,10 @@ def main():
   # sort based on probability (best first)
   inds_sort = np.argsort(prob)[::-1]
   
-  print 'Similar papers to:\n\t%s\n\t\tby: %s\n'%(bib[aid]['Title'],bib[aid]['Author'])
+  print 'Similar papers to:\n\t%s\n\t\tby: %s\n'%(bib[aid]['title'],bib[aid]['author'])
   for i in range(10):
     best = inds_sort[i]
-    print '%3d.\t%s\n\t\tby: %s\n\t\tid = %3d, prob = %f\n'%(i+1,bib[best]['Title'],bib[best]['Author'],best,prob[best])
+    print '%3d.\t%s\n\t\tby: %s\n\t\tid = %3d, prob = %f\n'%(i+1,bib[best]['title'],bib[best]['author'],best,prob[best])
 
 if __name__ == '__main__':
   main()
