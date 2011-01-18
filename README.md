@@ -12,3 +12,7 @@ Nominally released under GPL version 2 (see LICENSE).
 
 Micha Gorelick
 Daniel Foreman-Mackey
+
+##REQUIREMENTS
+
+You must first install [pybtparse](https://www.github.com/dfm/pybtparse).
