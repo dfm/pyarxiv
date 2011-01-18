@@ -92,6 +92,7 @@ static PyObject *btparse_load(PyObject *self, PyObject *args)
                 PyObject *key = PyString_FromString(field_name);
                 PyObject *val = PyString_FromString(bt_get_text(field));
                 PyDict_SetItem(dict, key, val);
+                printf("%s\n",bt_get_text(field));
             }
             free(field_name);
             if (PyDict_Size(dict) > 0)

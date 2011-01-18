@@ -8,15 +8,15 @@ import subprocess
 import os
 
 btparse_dir = '/usr/local'
-base_dir = os.getcwd()
-os.chdir('btparse/src/')
-subprocess.Popen(['./configure','--prefix=%s'%btparse_dir]).wait()
-
+# base_dir = os.getcwd()
+# os.chdir('btparse/src/')
+# subprocess.Popen(['./configure','--prefix=%s'%btparse_dir]).wait()
+# 
 # os.environ['CFLAGS'] = '-m32'
-
-subprocess.Popen(['make']).wait()
-subprocess.Popen(['make','install']).wait()
-os.chdir(base_dir)
+# 
+# subprocess.Popen(['make']).wait()
+# subprocess.Popen(['make','install']).wait()
+# os.chdir(base_dir)
 
 setup(name='btparse',
         version='1.0',

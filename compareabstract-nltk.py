@@ -6,7 +6,7 @@ compareabstract.py
 Created by Dan F-M on 2011-01-16.
 """
 
-#import bibparser
+# import bibparser
 import btparse
 import sys
 import re
@@ -27,7 +27,7 @@ strip_chars = r"""~@.,()[]{}`\/"'=1234567890% """
 
 def main():
   stem = Stemmer.Stemmer("english")
-  # bib = bibparser.BibTex(sys.argv[1])
+  # bib = bibparser.BibTex(sys.argv[1]).bib
   bib = btparse.load(sys.argv[1])
   aid = 1#np.random.randint(len(bib))
   while ('abstract' in bib[aid].keys()) == False:
