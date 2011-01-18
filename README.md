@@ -11,7 +11,9 @@ Nominally released under GPL version 2 (see LICENSE).
 ##AUTHORS
 
 Micha Gorelick
+
 Daniel Foreman-Mackey
+
 
 ##REQUIREMENTS
 
