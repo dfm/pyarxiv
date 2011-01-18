@@ -6,7 +6,7 @@ compareabstract.py
 Created by Dan F-M on 2011-01-16.
 """
 
-# import bibparser
+#import bibparser
 import btparse
 import sys
 import re
@@ -16,6 +16,11 @@ import nltk
 
 import numpy as np
 np.random.seed()
+
+try:
+  import pytools
+except:
+  pytools = False
 
 ignore_list = "and a the then we by be et al not of in to with for that on as which these our it an is than this are have at use".split()
 strip_chars = r"""~@.,()[]{}`\/"'=1234567890% """
@@ -45,6 +50,9 @@ def main():
   q_val = np.array(q_val)/np.sqrt(np.dot(q_val,q_val))
   prob = np.zeros(len(bib))
   
+  if pytools:
+    progress = pytools.ProgressBar("Analysing",len(bib))
+    progress.draw()
   for ind,entry in enumerate(bib):
     if ind != aid and ('abstract' in bib[ind].keys()):
       abstract = nltk.wordpunct_tokenize(bib[ind]['abstract'])
@@ -58,11 +66,13 @@ def main():
       mod = np.dot(r_val,r_val)
       if mod > 0:
         prob[ind] = np.dot(r_val/np.sqrt(mod),q_val)
+    if pytools: progress.progress()
+  if pytools: print ""
   
   # sort based on probability (best first)
   inds_sort = np.argsort(prob)[::-1]
   
-  print 'Similar papers to:\n\t%s\n\t\tby: %s\n'%(bib[aid]['title'],bib[aid]['author'])
+  print 'similar papers to:\n\t%s\n\t\tby: %s\n'%(bib[aid]['title'],bib[aid]['author'])
   for i in range(10):
     best = inds_sort[i]
     print '%3d.\t%s\n\t\tby: %s\n\t\tid = %3d, prob = %f\n'%(i+1,bib[best]['title'],bib[best]['author'],best,prob[best])

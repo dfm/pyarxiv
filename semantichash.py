@@ -1,7 +1,7 @@
 #!/bin/env python
 # encoding: utf-8
 
-import bibparser
+import btparse
 import analysewords
 import cPickle
 import sys
@@ -12,7 +12,7 @@ except:
 
 if __name__ == "__main__":
   print "Getting global word list"
-  bib = bibparser.BibTex(sys.argv[1]).bib
+  bib = btparse.load(sys.argv[1])
   words = [x[0] for x in analysewords.getGlobalWordVector(bib, 256)]
 
   NNinput = []
