@@ -22,7 +22,6 @@ import btparse
 import sys
 import re
 
-import Stemmer
 import nltk
 
 import numpy as np
@@ -37,14 +36,14 @@ ignore_list = "and a the then we by be et al not of in to with for that on as wh
 strip_chars = r"""~@.,()[]{}`\/"'=1234567890% """
 
 def main():
-  stem = Stemmer.Stemmer("english")
-  cleanword = lambda w : stem.stemWord(w.strip(w).lower())
+  stem = nltk.stem.LancasterStemmer()
+  cleanword = lambda w : stem.stem(w.strip(w).lower())
   bib = btparse.load(sys.argv[1])
   aid = np.random.randint(len(bib))
   while ('abstract' in bib[aid].keys()) == False:
     aid = np.random.randint(len(bib))
   
-  abstract = nltk.wordpunct_tokenize(" ".join(bib[aid]['abstract'],bib[aid]['title']))
+  abstract = nltk.wordpunct_tokenize(bib[aid]['abstract']+" "+bib[aid]['title'])
   q_vec0 = sorted([x[0] for x in nltk.pos_tag(abstract) if x[1] in ("NN")])
   
   q_vec = []
@@ -66,7 +65,7 @@ def main():
     progress.draw()
   for ind,entry in enumerate(bib):
     if ind != aid and ('abstract' in bib[ind].keys()):
-      abstract = nltk.wordpunct_tokenize(" ".join(bib[ind]['abstract'],bib[ind]['title']))
+      abstract = nltk.wordpunct_tokenize(bib[ind]['abstract']+" "+bib[ind]['title'])
       r_vec = sorted([x[0] for x in nltk.pos_tag(abstract) if x[1] in ("NN")])
       r_val = np.zeros(len(q_val))
       for w in r_vec:

@@ -18,7 +18,6 @@
 #
 
 import btparse
-from Stemmer import Stemmer
 import nltk
 import cPickle
 import sys
@@ -33,14 +32,14 @@ strip_chars = r"""~@.,()[]{}`\/"'=1234567890% """
 
 def getItemWordVector(bibitem, words):
   global ignore_list, strip_chars
-  stem = Stemmer("english")
+  stem = nltk.stem.LancasterStemmer()
 
   wordLookup = dict(zip(words, range(len(words))))
   wordVector = [0,]*len(words)
   if bibitem.has_key("abstract") and bibitem.has_key("title"):
     text = nltk.wordpunct_tokenize(bibitem["abstract"] + " " + bibitem["title"])
     for word in [x[0] for x in nltk.pos_tag(text) if x[1] in ("NN")]:
-      word = stem.stemWord(word.strip(strip_chars).lower())
+      word = stem.stem(word.strip(strip_chars).lower())
       if len(word)>1 and word not in ignore_list:
         try:
           index = wordLookup[word]
@@ -53,7 +52,7 @@ def getItemWordVector(bibitem, words):
 
 def getGlobalWordVector(bibitems, numkeep=0):
   global ignore_list, strip_chars
-  stem = Stemmer("english")
+  stem = nltk.stem.LancasterStemmer()
 
   wordvector = {}
   if pytools: progress = pytools.ProgressBar("Analysing",len(bibitems))
@@ -61,7 +60,7 @@ def getGlobalWordVector(bibitems, numkeep=0):
     if item.has_key("abstract") and item.has_key("title"):
       text = nltk.wordpunct_tokenize(item["abstract"] + " " + item["title"])
       for word in [x[0] for x in nltk.pos_tag(text) if x[1] in ("NN")]:
-        word = stem.stemWord(word.strip(strip_chars).lower())
+        word = stem.stem(word.strip(strip_chars).lower())
         if len(word)>1 and word not in ignore_list:
           try:
             wordvector[word] += 1
