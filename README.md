@@ -17,4 +17,7 @@ Daniel Foreman-Mackey
 
 ##REQUIREMENTS
 
-You must first install [pybtparse](https://www.github.com/dfm/pybtparse).
+This package depends on:
+ * [pybtparse](https://www.github.com/dfm/pybtparse)
+ * [NTLK](http://www.nltk.org/)
+ * [MDP](http://mdp-toolkit.sourceforge.net/)

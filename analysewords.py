@@ -17,7 +17,6 @@
 # along with pyarxiv.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-#import bibparser
 import btparse
 from Stemmer import Stemmer
 import nltk
@@ -38,8 +37,8 @@ def getItemWordVector(bibitem, words):
 
   wordLookup = dict(zip(words, range(len(words))))
   wordVector = [0,]*len(words)
-  if bibitem.has_key("Abstract") and bibitem.has_key("Title"):
-    text = nltk.wordpunct_tokenize(bibitem["Abstract"] + " " + bibitem["Title"])
+  if bibitem.has_key("abstract") and bibitem.has_key("title"):
+    text = nltk.wordpunct_tokenize(bibitem["abstract"] + " " + bibitem["title"])
     for word in [x[0] for x in nltk.pos_tag(text) if x[1] in ("NN")]:
       word = stem.stemWord(word.strip(strip_chars).lower())
       if len(word)>1 and word not in ignore_list:

@@ -18,13 +18,6 @@
 # along with pyarxiv.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-"""
-compareabstract.py
-
-Created by Dan F-M on 2011-01-16.
-"""
-
-# import bibparser
 import btparse
 import sys
 import re
@@ -45,19 +38,19 @@ strip_chars = r"""~@.,()[]{}`\/"'=1234567890% """
 
 def main():
   stem = Stemmer.Stemmer("english")
-  # bib = bibparser.BibTex(sys.argv[1]).bib
+  cleanword = lambda w : stem.stemWord(w.strip(w).lower())
   bib = btparse.load(sys.argv[1])
-  aid = 1#np.random.randint(len(bib))
+  aid = np.random.randint(len(bib))
   while ('abstract' in bib[aid].keys()) == False:
     aid = np.random.randint(len(bib))
   
-  abstract = nltk.wordpunct_tokenize(bib[aid]['abstract'])
+  abstract = nltk.wordpunct_tokenize(" ".join(bib[aid]['abstract'],bib[aid]['title']))
   q_vec0 = sorted([x[0] for x in nltk.pos_tag(abstract) if x[1] in ("NN")])
   
   q_vec = []
   q_val  = []
   for w in q_vec0:
-    w = stem.stemWord(w.strip(strip_chars).lower())
+    w = cleanword(w)
     if len(w)>2 and w not in ignore_list and re.search('\\\\',w) == None:
       if (w in q_vec) == False:
         q_vec.append(w)
@@ -73,12 +66,11 @@ def main():
     progress.draw()
   for ind,entry in enumerate(bib):
     if ind != aid and ('abstract' in bib[ind].keys()):
-      abstract = nltk.wordpunct_tokenize(bib[ind]['abstract'])
+      abstract = nltk.wordpunct_tokenize(" ".join(bib[ind]['abstract'],bib[ind]['title']))
       r_vec = sorted([x[0] for x in nltk.pos_tag(abstract) if x[1] in ("NN")])
       r_val = np.zeros(len(q_val))
       for w in r_vec:
-        #w = stem.stemWord(w.strip(strip_chars).lower())
-        w = w.strip(strip_chars).lower()
+        w = cleanword(w)
         if w in q_vec:
           r_val[q_vec.index(w)] += 1
       mod = np.dot(r_val,r_val)

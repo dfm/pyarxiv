@@ -20,29 +20,77 @@
 
 import btparse
 import analysewords
+import mdp
+import numpy as np
+
 import cPickle
 import sys
+from os import path
 try:
   import pytools
 except:
   pytools = False
 
+import pylab
+
+def pretrain(rbms, NNinput, i=0, sample=None):
+  if sample is None:
+    def sample():
+      return np.random.permutation(NNinput)[:int(NNinput.shape[0]/4)]
+
+  learning = True
+  lasterror = None
+  c = 0
+  while learning or c < 50:  #fine tuning on c? read through old notes on issue
+    rbms[i].train(sample(), decay=0.01)
+    if lasterror is not None:
+      if lasterror - rbms[i]._train_err < 0:
+        learning = False
+    lasterror = rbms[i]._train_err
+    c += 1
+  if i < len(rbms)-1:
+    pretrain(rbms, NNinput, i+1, lambda : rbms[i].sample_h(sample())[1])
+
+
+
 if __name__ == "__main__":
-  print "Getting global word list"
-  bib = btparse.load(sys.argv[1])
-  words = [x[0] for x in analysewords.getGlobalWordVector(bib, 256)]
+  #######CONFIG#########
+  wvec_length = 512
+  rbm_config = (512,256,128,64)
+  ######################
+  assert(wvec_length == rbm_config[0])
 
-  NNinput = []
-  NNinput_ref = {}
-  print "Getting individual word vectors"
-  if pytools: progress = pytools.ProgressBar("Analysing",len(bib))
-  for i, item in enumerate(bib):
-    try:
-      NNinput.append(analysewords.getItemWordVector(item, words))
-      NNinput_ref[len(NNinput)-1] = i
-    except:
-      pass
-    if pytools: progress.progress()
-  if pytools: print ""
+  if not path.isfile("NNinput.dat"):
+    print "Getting global word list"
+    bib = btparse.load(sys.argv[1])
+    words = [x[0] for x in analysewords.getGlobalWordVector(bib, 512)]
+  
+    NNinput = []
+    NNinput_ref = {}
+    print "Getting individual word vectors"
+    if pytools: progress = pytools.ProgressBar("Analysing",len(bib))
+    for i, item in enumerate(bib):
+      try:
+        NNinput.append(analysewords.getItemWordVector(item, words))
+        NNinput_ref[len(NNinput)-1] = i
+      except:
+        pass
+      if pytools: progress.progress()
+    if pytools: print ""
+    NNinput = np.array(NNinput, dtype='float32')
+  
+    print "Saving NN input"
+    cPickle.dump((NNinput,NNinput_ref,bib),open("NNinput.dat","w+"))
+  else:
+    print "Reloading previous NN input"
+    NNinput, NNinput_ref, bib = cPickle.load(file("NNinput.dat"))
 
-  cPickle.dump((NNinput,NNinput_ref,bib),open("NNinput.dat","w+"))
+  print "Creating Restricted Boltzmann Machines"
+  rbms = []
+  for i in range(len(rbm_config)-1):
+    rbms.append( mdp.nodes.RBMNode(visible_dim = rbm_config[i  ], 
+                                    hidden_dim = rbm_config[i+1]))
+
+  print "Starting pretraining"
+  pretrain(rbms, NNinput)
+
