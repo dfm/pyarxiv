@@ -21,6 +21,7 @@
 import btparse
 import analysewords
 import mdp
+from CPRBMNode import CPRBMNode
 import numpy as np
 
 import cPickle
@@ -47,6 +48,7 @@ def pretrain(rbms, NNinput, i=0, sample=None):
       if lasterror - rbms[i]._train_err < 0:
         learning = False
     lasterror = rbms[i]._train_err
+    print lasterror
     c += 1
   if i < len(rbms)-1:
     pretrain(rbms, NNinput, i+1, lambda : rbms[i].sample_h(sample())[1])
@@ -88,8 +90,12 @@ if __name__ == "__main__":
   print "Creating Restricted Boltzmann Machines"
   rbms = []
   for i in range(len(rbm_config)-1):
-    rbms.append( mdp.nodes.RBMNode(visible_dim = rbm_config[i  ], 
-                                    hidden_dim = rbm_config[i+1]))
+    if i == 0:
+      nodetype = CPRBMNode
+    else:
+      nodetype = mdp.nodes.RBMNode
+    rbms.append( nodetype(visible_dim = rbm_config[i  ], 
+                           hidden_dim = rbm_config[i+1]))
 
   print "Starting pretraining"
   pretrain(rbms, NNinput)
