@@ -16,7 +16,12 @@ class CPRBMNode(RBMNode):
   """
   Constrained poisson RBM.  Uses a poisson distribution for modeling visible word counts
   and the standard conditional Bernoulli distribution for modeling hidden features.  As such,
-    P(v=n|h) = Ps(
+    P(v_i=n|h) = Ps(v, exp(bv_i + Sum_j(h_j*w_ij)) * N/Z)
+    N = Sum_i(v_i)
+    Z = Sum_k(exp(bv_k + Sum_j(h_j*w_kj))
+
+  with resulting energy,
+    E(v,h) = -Sum_i(bv_i*v_i) + Sum_i(log(v_i!)) - Sum_j(bh_j*h_j) - Sum_ij(v_i*h_j*w_ij)
   """
 
   _Ps = lambda self, n, l : exp(-l) * (l**n) / vfactorial(n)
