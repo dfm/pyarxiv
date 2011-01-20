@@ -43,7 +43,7 @@ def pretrain(rbms, NNinput, i=0, sample=None):
   lasterror = None
   c = 0
   while learning or c < 50:  #fine tuning on c? read through old notes on issue
-    rbms[i].train(sample(), decay=0.01)
+    rbms[i].train(sample(), decay=0.01, n_updates=10)
     if lasterror is not None:
       if lasterror - rbms[i]._train_err < 0:
         learning = False
