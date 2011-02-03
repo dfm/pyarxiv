@@ -18,8 +18,13 @@ Daniel Foreman-Mackey
 ##REQUIREMENTS
 
 This package depends on:
- * [pybtparse](https://www.github.com/dfm/pybtparse)
+
+ * [pybtparse](https://github.com/dfm/pybtparse)
+ 
  * [NTLK](http://www.nltk.org/)
+ 
  * [MDP](http://mdp-toolkit.sourceforge.net/)
+ 
  * [feedparser](http://feedparser.org/)
+ 
  * [NumPy](http://numpy.scipy.org/)
