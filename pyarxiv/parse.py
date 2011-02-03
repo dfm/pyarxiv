@@ -29,24 +29,17 @@ returns all the nouns and their relative frequencies
 
 import sys
 import pickle
-import re
 import numpy as np
 
 import btparse
-import nltk
 
 try:
   import pytools
 except:
   pytools = False
 
+from languagetools import *
 
-# bib = btparse.load(sys.argv[1])
-
-# an arbitrary list of words we don't like!
-ignore_list = """and a the then we by be et al not of in to with for 
-that on as which these our it an is than this are have at use cite""".split()
-strip_chars = r"""~@.,()[]{}`\/"'=1234567890% """
 
 class BibTexLibrary:
   def __init__(self,path):
@@ -67,7 +60,7 @@ class BibTexLibrary:
         print 'Tokenizing library... this may take some time...'
       for ind,entry in enumerate(self.bib):
         if ('abstract' in self.bib[ind].keys()) and ('title' in self.bib[ind].keys()):
-          tokens,freq = self.get_nouns(self.bib[ind]['abstract']+" "+self.bib[ind]['title'])
+          tokens,freq = get_nouns(self.bib[ind]['abstract']+" "+self.bib[ind]['title'])
           for i,w in enumerate(tokens):
             try:
               self.freq[self.nouns.index(w)] += freq[i]
@@ -76,41 +69,15 @@ class BibTexLibrary:
               self.freq.append(freq[i])
         
         if pytools: progress.progress()
-        else: print '%.1f \%'%(float(ind)/len(self.bib))
-      
+        else:
+          sys.stdout.flush()
+          nmax = 50
+          n = int(float(ind)/len(self.bib)*nmax)
+          print "".join(['   [',('+')*(n),(' ')*(nmax-n),
+                    '] %6.1f %%'])%(float(ind)/len(self.bib)*100.), "\r",
       
   def save(self,path):
     """save to a file"""
     pickle.dump((self.nouns,self.freq),open(path,'wb'),-1)
-  
-  def get_nouns(self,string):
-    """
-    Return a sorted list of the nouns in 'string' and their relative frequency
-    """
-    
-    # tokenize the word
-    raw_tokens = nltk.wordpunct_tokenize(string)
-    
-    # clean it up!
-    stem = nltk.stem.LancasterStemmer()
-    cleanword = lambda w : stem.stem(w.strip(strip_chars).lower())
-    
-    # sort and return only the nouns
-    tokens = sorted([cleanword(x[0]) for x in nltk.pos_tag(raw_tokens) if x[1][:2] in ("NN")])
-    
-    # count the frequencies of each word
-    nouns = []
-    freq  = []
-    for w in tokens:
-      if len(w)>2 and w not in ignore_list and re.search('\\\\',w) == None:
-        if (w in nouns) == False:
-          nouns.append(w)
-          freq.append(1)
-        else:
-          # we assume that since we have a sorted list of words,
-          # the last one that we added is the same as this one.
-          freq[-1] += 1
-    freq = np.array(freq,dtype=float)
-    return nouns, freq/np.sum(freq)
 
 
