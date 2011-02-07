@@ -28,18 +28,27 @@ import feedparser
 
 from languagetools import *
 
-default_url = "http://arxiv.org/rss/astro-ph"
+default_url = ["http://arxiv.org/rss/astro-ph","http://arxiv.org/rss/cs"]
 # default_url = "astro-ph"
 
 class ArxivFeed:
   def __init__(self,url=None):
     if url == None:
       url = default_url
-    self.entries = feedparser.parse(url)['entries']
+    
     self.nouns = []
     self.freq  = []
     
-    print "Tokenizing new articles... this may take a while..."
+    print "Analyzing new articles... this may take a while..."
+    # get feeds...
+    try:
+      self.entries = []
+      for u in url:
+        for e in feedparser.parse(u)['entries']:
+          self.entries.append(e)
+    except:
+      self.entries = feedparser.parse(url)['entries']
+    
     for ind,e in enumerate(self.entries):
       nouns,freq = get_nouns(e['summary']+" "+e['title'])
       self.nouns.append(nouns)

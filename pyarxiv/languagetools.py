@@ -60,5 +60,5 @@ def get_nouns(string,relative=True):
         freq[-1] += 1
   freq = np.array(freq,dtype=float)
   if relative:
-    return nouns, freq/np.sum(freq)
+    return nouns, freq/len(freq)
   return nouns, freq

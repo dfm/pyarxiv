@@ -50,11 +50,11 @@ def check_arxiv():
   
   prob = np.array(prob)
   order = np.argsort(prob)[::-1]
-  print prob[order]
   
   for i in order:
-    print "".join(feed.entries[i]['title'].split('(')[:-1])
-    print feed.entries[i]['summary']
+    # print "".join(feed.entries[i]['title'].split('(')[:-1])
+    print "".join(feed.entries[i]['title'])
+    # print feed.entries[i]['summary']
     print "\t",feed.entries[i]['link']
     print
 
